@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" strict="true" name="Log4j2Config" packages="jp.co.axa.logging">
+
+    <Properties>
+        <Property name="logPattern">%d{ISO8601}[%-5p][%t][%c{1}.%M.%L] %m %ex%n</Property>
+        <Property name="maxLogFileSize">5MB</Property>
+        <Property name="maxLogFileNum">4</Property>
+        <Property name="maxBackupIndex">4</Property>
+    </Properties>
+
+    <Appenders>
+        <!-- ConsoleAppender-->
+        <Async name="AsyncConsoleAppender" includeLocation="true">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Async>
+
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${logPattern}"/>
+        </Console>
+
+
+        <!-- MessageAppyncender-->
+        <Async name="MessageAppender" includeLocation="true">
+            <AppenderRef ref="MessageAppender"/>
+        </Async>
+        <RollingFile name="MessageAppender" fileName="./logs/logging.log" filePattern="./logs/logging-%i.log" maxBackupIndex="${maxBackupIndex}">
+            <PatternLayout pattern="${logPattern}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="${maxLogFileSize}" />
+            </Policies>
+            <DefaultRolloverStrategy max="${maxLogFileNum}" fileIndex="min"/>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Root level="INFO" includeLocation="true">
+            <AppenderRef ref="AsyncConsoleAppender"/>
+        </Root>
+        <Logger name="jp.co.axa" level="ALL" additivity="false" includeLocation="true">
+            <AppenderRef ref="AsyncConsoleAppender"/>
+            <AppenderRef ref="AsyncMessageAppender"/>
+        </Logger>
+    </Loggers>
+</Configuration>

@@ -3,20 +3,18 @@ package jp.co.axa.apidemo.entities;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name="EMPLOYEE")
+@Table(name="EMPLOYEE", indexes = {
+        @Index(name="IDX_EMPLOYEE_ID", columnList="EMPLOYEE_NAME", unique = true)
+})
 public class Employee {
 
     @Getter
     @Setter
     @Id
+    @Column(name="EMPLOYEE_ID")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
