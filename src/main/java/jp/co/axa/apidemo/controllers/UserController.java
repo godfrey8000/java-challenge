@@ -1,5 +1,7 @@
 package jp.co.axa.apidemo.controllers;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import jp.co.axa.apidemo.entities.User;
 import jp.co.axa.apidemo.repositories.UserRepository;
 import jp.co.axa.apidemo.security.UsernameAndPasswordAuthenticationRequest;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RestController
 @RequestMapping("/api/v1/users")
+@Api(tags = "Users")
 public class UserController {
 
     private final UserRepository userRepository;
@@ -24,6 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/user")
+    @ApiOperation("Create a new user")
     public void createUser(@RequestBody UsernameAndPasswordAuthenticationRequest request) {
         User user = new User();
         user.setLoginId(request.getUsername());

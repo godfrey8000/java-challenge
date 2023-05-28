@@ -2,6 +2,9 @@ package jp.co.axa.apidemo.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
+import jp.co.axa.apidemo.dto.AuthResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -65,6 +68,21 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .signWith(secretKey)
                 .compact();
 
+        AuthResponse authResponse = new AuthResponse(jwtConfig.getTokenPrefix() + token, LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays()).toString());
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonBody;
+        try {
+            jsonBody = objectMapper.writeValueAsString(authResponse);
+        } catch (IOException e) {
+            // Handle JSON conversion error
+            jsonBody = ""; // Set an appropriate default value
+        }
+
+        // Return JSON response with token
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(jsonBody);
+        response.getWriter().flush();
         response.addHeader(jwtConfig.getAuthorizationHeader(), jwtConfig.getTokenPrefix() + token);
     }
 }
